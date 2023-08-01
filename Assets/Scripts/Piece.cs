@@ -45,30 +45,25 @@ public class Piece : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownH
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        if (Input.GetMouseButtonUp(1)) {
-            Vector3 mouse_offset = GetMouse();
-            bool valid_square = Board.IsValidSquare(mouse_offset, color);
+        Vector3 mouse_offset = GetMouse();
+        bool valid_square = Board.IsValidSquare(mouse_offset, color);
 
-            if (valid_square) {
-                int new_steps = Board.PositionToSteps(mouse_offset);
-                if (new_steps == steps + gc.dice.roll && gc.possible_moves.Contains(this)) {
-                    gc.ExecuteMove(this);
-                    Debug.Log("Executed move to square " + new_steps);
-                    return;
-                }
-                Debug.Log("Attempted move is invalid.");
+        if (valid_square) {
+            int new_steps = Board.PositionToSteps(mouse_offset);
+            if (new_steps == steps + gc.dice.roll && gc.possible_moves.Contains(this)) {
+                gc.ExecuteMove(this);
+                Debug.Log("Executed move to square " + new_steps);
+                return;
             }
-            else {
-                Debug.Log("Attempted move outside the board.");
-            }
-            
-            if (steps != 15) {
-                canvas.sortingOrder = 1;
-                transform.localPosition = initial_position;
-            }
+            Debug.Log("Attempted move is invalid.");
         }
         else {
             Debug.Log("Attempted move outside the board.");
+        }
+        
+        if (steps != 15) {
+            canvas.sortingOrder = 1;
+            transform.localPosition = initial_position;
         }
     }
 
