@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Color=GameColor.Color;
 
 public class CurrentPlayerImage : MonoBehaviour
 {
@@ -23,10 +24,10 @@ public class CurrentPlayerImage : MonoBehaviour
     void Update()
     {
         switch(gc.turn) {
-            case Piece.Color.Black:
+            case Color.Black:
                 img.sprite = black;
             break;
-            case Piece.Color.White:
+            case Color.White:
                 img.sprite = white;
             break;
             default:

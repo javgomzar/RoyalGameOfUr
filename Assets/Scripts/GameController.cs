@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Color=GameColor.Color;
 
 public enum PlayMode {
     cpu,
@@ -14,7 +15,7 @@ public class GameController : MonoBehaviour
 {
     public PlayMode play_mode;
     public Dice dice;
-    public Piece.Color turn;
+    public Color turn;
 
     public List<Piece> possible_moves = new List<Piece>();
     public Canvas win_canvas;
@@ -22,7 +23,7 @@ public class GameController : MonoBehaviour
     public Text win_text;
     public Fade fade;
     public Board board;
-    public List<Piece.Color> ai_players;
+    public List<Color> ai_players;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +31,7 @@ public class GameController : MonoBehaviour
         win_text = win_canvas.GetComponentInChildren<Text>();
         fade = GameObject.Find("BlackBackground").GetComponent<Fade>();
         board = GameObject.Find("Board").GetComponent<Board>();
-        ai_players = new List<Piece.Color>();
+        ai_players = new List<Color>();
     }
 
     public bool ValidateMove(Piece piece) {
@@ -47,7 +48,7 @@ public class GameController : MonoBehaviour
             }
             
             // You can't take a piece in the center rosetta
-            taken_piece = board.GetPiece(new_steps, Piece.OppositeColor(piece.color));
+            taken_piece = board.GetPiece(new_steps, GameColor.OppositeColor(piece.color));
             if (taken_piece != null) {
                 return taken_piece.steps != Board.center_rosetta;
             }
@@ -82,7 +83,7 @@ public class GameController : MonoBehaviour
 
         // Eating rule
         if (new_steps > 4 && new_steps < 13) {
-            Piece taken_piece = board.GetPiece(new_steps, Piece.OppositeColor(piece.color));
+            Piece taken_piece = board.GetPiece(new_steps, GameColor.OppositeColor(piece.color));
             if (taken_piece != null) {
                 board.RemoveFromBoard(taken_piece);
             }
@@ -106,11 +107,11 @@ public class GameController : MonoBehaviour
     public void NextTurn(Piece piece_moved) {
         // Win condition
         if (board.black_stack_depth == 7) {
-            Win(Piece.Color.Black);
+            Win(Color.Black);
             return;
         }
         else if (board.white_stack_depth == 7) {
-            Win(Piece.Color.White);
+            Win(Color.White);
             return;
         }
 
@@ -125,14 +126,14 @@ public class GameController : MonoBehaviour
         if (piece_moved != null) {
             // If you fall on a rosetta, you can roll the dice again!
             if (!Board.rosettas.Contains(piece_moved.steps)) {
-                turn = Piece.OppositeColor(turn);
+                turn = GameColor.OppositeColor(turn);
             }
         }
         else {
-            turn = Piece.OppositeColor(turn);
+            turn = GameColor.OppositeColor(turn);
         }
         
-        Debug.Log("Next turn: " + (turn == Piece.Color.Black? "Black" : "White") + ".");
+        Debug.Log("Next turn: " + GameColor.GetString(turn) + ".");
         dice.StartClear();
         possible_moves = new List<Piece>();
 
@@ -147,8 +148,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void Win(Piece.Color color) {
-        win_text.text = System.Enum.GetName(typeof(Piece.Color), color) + " wins!";
+    public void Win(Color color) {
+        win_text.text = GameColor.GetString(color) + " wins!";
         win_canvas.enabled = true;
         dice.StartClear();
         FadeOut();

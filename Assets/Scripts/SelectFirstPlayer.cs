@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Color=GameColor.Color;
 
 public class SelectFirstPlayer : MonoBehaviour, IPointerDownHandler
 {
-    public Piece.Color color;
+    public Color color;
     public GameController gc;
     public Dice dice;
     public Canvas menu_canvas;
@@ -23,7 +24,7 @@ public class SelectFirstPlayer : MonoBehaviour, IPointerDownHandler
         gc.turn = color;
 
         if (gc.play_mode == PlayMode.cpu) {
-            gc.ai_players.Add(Piece.OppositeColor(color));
+            gc.ai_players.Add(GameColor.OppositeColor(color));
         }
         menu_canvas.enabled = false;
         gc.dice.enabled = true;

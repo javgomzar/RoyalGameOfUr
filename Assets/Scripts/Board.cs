@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Color=GameColor.Color;
 
 
 public class Board : MonoBehaviour
@@ -24,7 +25,7 @@ public class Board : MonoBehaviour
         stack_distance = 10;
     }
 
-    public Piece GetPiece(int steps, Piece.Color color) {
+    public Piece GetPiece(int steps, Color color) {
         foreach (Piece piece in pieces) {
             if (piece.steps == steps && piece.color == color) {
                 return piece;
@@ -33,7 +34,7 @@ public class Board : MonoBehaviour
         return null;
     }
 
-    public List<Piece> GetPieces(Piece.Color color) {
+    public List<Piece> GetPieces(Color color) {
         List<Piece> result = new List<Piece>();
         foreach (Piece piece in pieces) {
             if (piece.color == color) {
@@ -44,24 +45,24 @@ public class Board : MonoBehaviour
     }
 
     public void FreeAvailableSpot(Piece piece) {
-        List<Vector3> available_spots = piece.color == Piece.Color.Black? available_black : available_white;
+        List<Vector3> available_spots = piece.color == Color.Black? available_black : available_white;
         
         available_spots.Add(piece.initial_position);
     }
 
     public void RemoveFromBoard(Piece piece) {
-        if (piece.color == Piece.Color.Black) {
+        if (piece.color == Color.Black) {
             piece.Remove(available_black[0]);
             available_black.RemoveAt(0);
         }
-        else if (piece.color == Piece.Color.White) {
+        else if (piece.color == Color.White) {
             piece.Remove(available_white[0]);
             available_white.RemoveAt(0);
         }
     }
 
     public void Stack(Piece piece) {
-        if (piece.color == Piece.Color.Black) {
+        if (piece.color == Color.Black) {
             piece.transform.localPosition = Board.StepsToPosition(15, piece.color) + new Vector3(0, black_shift, 0);
             piece.canvas.sortingOrder = black_stack_depth;
             
@@ -92,10 +93,10 @@ public class Board : MonoBehaviour
         }
     }
 
-    public static Vector3 StepsToPosition(int steps, Piece.Color color) {
+    public static Vector3 StepsToPosition(int steps, Color color) {
         Vector3 result = new Vector3(0,0,0);
         if (steps >= 0 && steps <= 4) {
-            result.x = color == Piece.Color.Black? 60 : -60;
+            result.x = color == Color.Black? 60 : -60;
             result.y = 30 + 60 * (steps-1);
         }
         else if (steps >= 5 && steps <= 12) {
@@ -103,13 +104,13 @@ public class Board : MonoBehaviour
             result.y = 210 - 60 * (steps - 5);
         }
         else if (steps >= 13 && steps <= 15) {
-            result.x = color == Piece.Color.Black? 60 : -60;
+            result.x = color == Color.Black? 60 : -60;
             result.y = -210 + 60 * (steps - 13);
         }
         return result;
     }
 
-    public static bool IsValidSquare(Vector3 square, Piece.Color color) {        
+    public static bool IsValidSquare(Vector3 square, Color color) {        
         // Board rectangle
         if (Mathf.Abs(square.x) > 90 | Mathf.Abs(square.y) > 240) {
             return false;
@@ -120,10 +121,10 @@ public class Board : MonoBehaviour
         //     return false;
         // }
         
-        if (color == Piece.Color.Black) {
+        if (color == Color.Black) {
             return square.x > -30;
         }
-        else if (color == Piece.Color.White) {
+        else if (color == Color.White) {
             return square.x < 30;
         }
 

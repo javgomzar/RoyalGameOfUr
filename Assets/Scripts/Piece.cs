@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Utils;
+using Color=GameColor.Color;
 
 public class Piece : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
     public Canvas canvas;
-    public enum Color {Black, White};
     public Color color;
     public int steps;
     public GameController gc;
@@ -20,32 +21,19 @@ public class Piece : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownH
         canvas = GetComponent<Canvas>();
     }
 
-    public static Color OppositeColor(Color color) {
-        if (color == Color.Black) {
-            return Color.White;
-        }
-        else {
-            return Color.Black;
-        }
-    }
-
     public void OnPointerDown(PointerEventData eventData) {
         initial_position = transform.localPosition;
     }
 
     public void OnDrag(PointerEventData eventData) {
         if (gc.dice.dice_rolled_this_turn && gc.turn == color && steps != 15) {
-            transform.localPosition = GetMouse();
+            transform.localPosition = GetMouse(cam);
             canvas.sortingOrder = 8;
         }
     }
 
-    public Vector3 GetMouse() {
-        return new Vector3(Input.mousePosition.x - cam.pixelWidth/2, Input.mousePosition.y - cam.pixelHeight/2,0);
-    }
-
     public void OnEndDrag(PointerEventData eventData) {
-        Vector3 mouse_offset = GetMouse();
+        Vector3 mouse_offset = GetMouse(cam);
         bool valid_square = Board.IsValidSquare(mouse_offset, color);
 
         if (valid_square) {

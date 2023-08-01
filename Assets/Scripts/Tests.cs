@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Color=GameColor.Color;
 
 public class Tests : MonoBehaviour
 {
@@ -15,11 +16,11 @@ public class Tests : MonoBehaviour
         white_positions_results = new List<Vector3>();
 
         for (var i = 1; i < 16; i++) {
-            Vector3 position = Board.StepsToPosition(i, Piece.Color.Black);
+            Vector3 position = Board.StepsToPosition(i, Color.Black);
             black_positions_results.Add(position);
             black_steps_results.Add(Board.PositionToSteps(position));
 
-            position = Board.StepsToPosition(i, Piece.Color.White);
+            position = Board.StepsToPosition(i, Color.White);
             white_positions_results.Add(position);
             white_steps_results.Add(Board.PositionToSteps(position));
         }
