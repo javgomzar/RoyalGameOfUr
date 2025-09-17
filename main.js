@@ -278,7 +278,7 @@ document.addEventListener('mouseup', (event) => {
             left += board_rect.left;
             top += board_rect.top;
 
-            let free_spots = currentTurn === BLACK ? white_free_spots : black_free_spots;
+            let free_spots = currentTurn === BLACK ? black_free_spots : white_free_spots;
             if (lastSteps === 0) {
                 free_spots.push([lastX, lastY]);
             }
