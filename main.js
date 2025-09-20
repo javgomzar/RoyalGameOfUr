@@ -158,7 +158,7 @@ function getSteps(offsetX, offsetY) {
             return 4 - Math.floor(offsetY / 60);
         }
         else {
-            return 14 - Math.floor((offsetY - 360) / 60);
+            return 15 - Math.floor((offsetY - 300) / 60);
         }
     }
     else {
@@ -247,10 +247,7 @@ document.addEventListener('mouseup', (event) => {
                 for (let i = 0; i < 7; i++) {
                     // Checking same color pieces
                     const same_color_piece = same_color[i];
-                    const same_left = same_color_piece.element.offsetLeft - board_rect.left;
-                    const same_top = same_color_piece.element.offsetTop - board_rect.top;
-                    const same_coordinates = snap(same_left, same_top);
-                    if (same_coordinates.left === left && same_coordinates.top === top) {
+                    if (same_color_piece.steps === nextSteps) {
                         isValid = false;
                         console.log("Same color piece present: invalid move.")
                         break;
@@ -258,18 +255,28 @@ document.addEventListener('mouseup', (event) => {
                     
                     // Checking enemy pieces
                     const other_color_piece = other_color[i];
-                    const other_left = other_color_piece.element.offsetLeft - board_rect.left;
-                    const other_top = other_color_piece.element.offsetTop - board_rect.top;
-                    const other_coordinates = snap(other_left, other_top);
-                    if (other_coordinates.left === left && other_coordinates.top === top) {
-                        deadPiece = other_color_piece;
-                        isValid = true;
-                        console.log("A piece was taken.")
-                        break;
+                    if (
+                        other_color_piece.steps > 4 && 
+                        other_color_piece.steps < 13 && 
+                        other_color_piece.steps === nextSteps
+                    ) {
+                        if (nextSteps !== 8) {
+                            deadPiece = other_color_piece;
+                            isValid = true;
+                            console.log("A piece was taken.")
+                            break;
+                        }
+                        else {
+                            isValid = false;
+                            break;
+                        }
                     }
                 }
             }
         }
+
+        isValid = true;
+        console.log("nextSteps: " + nextSteps);
 
         console.log("Valid: " + isValid);
         console.log(deadPiece);
@@ -284,9 +291,11 @@ document.addEventListener('mouseup', (event) => {
             }
 
             if (deadPiece !== null) {
-                const [free_left, free_top] = free_spots.shift();
+                let dead_free_spots = currentTurn === BLACK ? white_free_spots : black_free_spots;
+                const [free_left, free_top] = dead_free_spots.shift();
                 deadPiece.element.style.left = free_left + 'px';
                 deadPiece.element.style.top = free_top + 'px';
+                deadPiece.steps = 0;
             }
 
             if (rosettas.includes(nextSteps)) {
@@ -304,6 +313,7 @@ document.addEventListener('mouseup', (event) => {
         draggedPiece.element.style.left = left + 'px';
         draggedPiece.element.style.top = top + 'px';
         draggedPiece.element.style.zIndex = 1;
+        draggedPiece.steps = nextSteps;
 
         draggedPiece = null;
         lastX = null;
